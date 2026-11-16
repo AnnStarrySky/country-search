@@ -1,6 +1,7 @@
 import { CountrySearch, type SearchState } from './countrySearch.js';
 import { debounce } from './debounce.js';
 import { searchCountries } from './searchCountries.js';
+import { type CountryCard } from './mapCountryResponse.js';
 
 const DEBOUNCE_DELAY_MS = 300;
 
@@ -28,6 +29,30 @@ function showStatus(
   retryButton.hidden = kind !== 'error';
 }
 
+function createCard(country: CountryCard): HTMLLIElement {
+  const item = document.createElement('li');
+  item.className = 'card';
+
+  const flag = document.createElement('img');
+  flag.className = 'card-flag';
+  flag.src = country.flagUrl;
+  flag.alt = `Флаг: ${country.name}`;
+  flag.width = 64;
+
+  const name = document.createElement('h2');
+  name.textContent = country.name;
+
+  const details = document.createElement('p');
+  details.textContent = [
+    `Столица: ${country.capital || '—'}`,
+    `Регион: ${country.region || '—'}`,
+    `Население: ${country.population.toLocaleString('ru-RU')}`,
+  ].join(' · ');
+
+  item.append(flag, name, details);
+  return item;
+}
+
 function render(state: SearchState): void {
   list.replaceChildren();
 
@@ -46,11 +71,7 @@ function render(state: SearchState): void {
       break;
     case 'results':
       showStatus('none');
-      for (const country of state.countries) {
-        const item = document.createElement('li');
-        item.textContent = country.name;
-        list.append(item);
-      }
+      list.append(...state.countries.map(createCard));
       break;
   }
 }
