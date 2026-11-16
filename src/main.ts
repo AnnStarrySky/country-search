@@ -16,9 +16,18 @@ const retryButton = document.createElement('button');
 retryButton.type = 'button';
 retryButton.textContent = 'Повторить';
 
+const layout = document.createElement('div');
+layout.className = 'layout';
+
 const list = document.createElement('ul');
 
-document.body.append(input, statusMessage, retryButton, list);
+const details = document.createElement('section');
+details.className = 'details';
+details.hidden = true;
+
+layout.append(list, details);
+
+document.body.append(input, statusMessage, retryButton, layout);
 
 function showStatus(
   kind: 'loading' | 'empty' | 'error' | 'none',
@@ -42,19 +51,48 @@ function createCard(country: CountryCard): HTMLLIElement {
   const name = document.createElement('h2');
   name.textContent = country.name;
 
-  const details = document.createElement('p');
-  details.textContent = [
+  const summary = document.createElement('p');
+  summary.textContent = [
     `Столица: ${country.capital || '—'}`,
     `Регион: ${country.region || '—'}`,
     `Население: ${country.population.toLocaleString('ru-RU')}`,
   ].join(' · ');
 
-  item.append(flag, name, details);
+  item.append(flag, name, summary);
+  item.addEventListener('click', () => showDetails(country));
   return item;
+}
+
+function listOrDash(values: string[]): string {
+  return values.length > 0 ? values.join(', ') : '—';
+}
+
+function showDetails(country: CountryCard): void {
+  const title = document.createElement('h2');
+  title.textContent = `${country.name} (${country.nativeName || '—'})`;
+
+  const info = document.createElement('p');
+  info.textContent = [
+    `Подрегион: ${country.subregion || '—'}`,
+    `Площадь: ${country.area.toLocaleString('ru-RU')} км²`,
+    `Границы: ${listOrDash(country.borders)}`,
+    `Языки: ${listOrDash(country.languages)}`,
+    `Валюта: ${listOrDash(country.currencies)}`,
+  ].join('\n');
+  info.style.whiteSpace = 'pre-line';
+
+  details.replaceChildren(title, info);
+  details.hidden = false;
+}
+
+function hideDetails(): void {
+  details.hidden = true;
+  details.replaceChildren();
 }
 
 function render(state: SearchState): void {
   list.replaceChildren();
+  hideDetails();
 
   switch (state.status) {
     case 'idle':
