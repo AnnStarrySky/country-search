@@ -5,6 +5,12 @@ body {
   padding: 0 1rem;
 }
 
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 input {
   width: 100%;
   padding: 0.6rem;
@@ -33,9 +39,11 @@ input {
 .card {
   cursor: pointer;
   margin-bottom: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .card h2 {
@@ -43,9 +51,16 @@ input {
   font-size: 1.1rem;
 }
 
+.card-flag {
+  display: block;
+  border: 1px solid #888;
+  border-radius: 3px;
+}
+
 .card:hover {
-  background: #f1f3f5;
+  background: #f8f9fa;
   border-color: #888;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .details {
